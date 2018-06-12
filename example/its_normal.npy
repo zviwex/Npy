@@ -1,0 +1,28 @@
+import normalyze; exec(normalyze.run("""
+
+import os
+import normal_module
+
+#print dir(normal_module)
+
+#print 
+"-"-"
+This is a brand new print
+"-"-"
+
+#print os.getcwd()
+for i in xrange(10)
+{
+    if(i % 7 == 0)
+    {
+        pass#print "Boom"
+    }
+    else:
+    {
+        pass#print i
+    }
+}
+print normal_module.imported_func()
+
+"""),globals())
+

@@ -1,0 +1,8 @@
+import normalyze; exec(normalyze.run("""
+
+def imported_func()
+{
+    return "I'm from imported function!!!"
+}
+"""),globals())
+

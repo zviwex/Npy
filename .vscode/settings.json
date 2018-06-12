@@ -1,0 +1,4 @@
+{
+    "files.associations": {"*.npy":"python"},
+        "python.autoComplete.addBrackets": true
+    }
