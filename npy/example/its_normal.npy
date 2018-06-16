@@ -1,4 +1,4 @@
-import normalyze; exec(normalyze.run("""
+import npy; exec(npy.run("""
 
 import os
 import normal_module

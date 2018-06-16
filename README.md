@@ -10,11 +10,12 @@ Normalize Python block and indentation technique
 ## As runner
 You can write your program in .npy file with the right way to indexnt and to crate blocks, and then run the normalyze.py parser on the file/repo
 
-```bash
+```sh
 python normalyze.py file_path
 python normalyze.py -d dir_path
 python normalyze.py -h
 ```
+The  normalyze.py file will be at <Python dir>\Scripts
 
 This options is to convert the .npy file (normal indentation file) to a .py file (readable to python interpreter)
 
@@ -22,7 +23,7 @@ This options is to convert the .npy file (normal indentation file) to a .py file
 You can write your code this way and run it directly from python interptreter
 
 ```python
-import normalyze; exec(normalyze.run("""
+import npy; exec(npy.run("""
 
 # Your code goes here
 "-"-"
@@ -33,6 +34,12 @@ Lined raw string will look like this
 ```
 Note - this supports modules too.
 
+# Installation
+
+```sh
+python -m pip install --upgrade pip
+python -m pip install --upgrade npy
+```
 
 # Contact
 If you have any questions feel free to ping me
