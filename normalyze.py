@@ -1,3 +1,7 @@
+"""
+Author: ZviWex
+"""
+import argparse
 import sys
 import os
 
@@ -17,35 +21,54 @@ def branch(line, depth):
 def _parse(code, is_module):
     depth = 0
     new_code = []
+    lined_string = False
     for line_idx in xrange(len(code)):
         if is_module:
+            # If this is module configuration, supporting new lined-string format
             code[line_idx] = code[line_idx].replace('"-"-"', '"""')
-        if len(code[line_idx]) > 0 and code[line_idx][0] == '{' and line_idx != 0:
-            i = -1
-            while new_code[i].strip() == "":
-                i -= 1
-            
-            j = -1
-            while new_code[j].strip() != new_code[i].strip():
-                j -= 1
+        
+        if '"""' in code[line_idx]:
+            lined_string = not lined_string 
+        
+        if not lined_string:
+            # If this is start of block
+            if len(code[line_idx]) > 0 and code[line_idx][0] == '{' and line_idx != 0:
+                
+                # Finding the opening statement in old code
+                i = -1
+                while new_code[i].strip() == "":
+                    i -= 1
 
-            new_code[i] = opening_statement(new_code[j], depth)
-            line = branch(code[line_idx], depth)
-            if line.strip() != "":
-                new_code.append(line)
-            depth += 1
-        elif len(code[line_idx]) > 0 and code[line_idx][0] == '}':
-            line = branch(code[line_idx], depth)
-            if line.strip() != "":
-                new_code.append(line)
-            depth -= 1
+                # Finding the opening statement in new code            
+                j = -1
+                while new_code[j].strip() != new_code[i].strip():
+                    j -= 1
+
+                # Fixing opening statement
+                new_code[i] = opening_statement(new_code[j], depth)
+                
+                # Fixing branch line
+                line = branch(code[line_idx], depth)
+                
+                # Adding line
+                if line.strip() != "":
+                    new_code.append(line)
+            
+                depth += 1
+        
+            # If this is end of block
+            elif len(code[line_idx]) > 0 and code[line_idx][0] == '}':
+                line = branch(code[line_idx], depth)
+                if line.strip() != "":
+                    new_code.append(line)
+                depth -= 1
+            
+            else:
+                new_code.append(indent(code[line_idx], depth))
         else:
             new_code.append(indent(code[line_idx], depth))
+            
     return new_code
-
-def _load(codelist):
-    code = "\n".join(codelist)
-    exec(code, globals())
 
 def parse_file_and_save(file_path, is_module = False):
     if ".npy" not in file_path[-4:]:
@@ -61,13 +84,10 @@ def parse_file_and_save(file_path, is_module = False):
     
 
 
-def as_runner(args):
-    is_dir = False
-    for arg in args:
-        if '-d' == arg:
-            is_dir = True
+def as_runner(path, is_dir):
+
         
-    path = os.path.abspath(args[-1])
+    path = os.path.abspath(path)
     
     if is_dir:
         for root, _, files in os.walk(path):
@@ -88,4 +108,8 @@ def run(code):
 
 
 if __name__ == "__main__":
-    as_runner(sys.argv)
+    parser = argparse.ArgumentParser(description='Normalyzing Python block and indentation system')
+    parser.add_argument('-d', '--is_dir', action='store_true', help="if you want to normalyze a directory")
+    parser.add_argument('path', help="file / directory path")
+    args =  parser.parse_args()
+    as_runner(args.path, args.is_dir)
